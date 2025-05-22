@@ -94,7 +94,8 @@ import (
 	"encoding/json"
 	jsoniter "github.com/json-iterator/go"
 	"runtime/debug"
-	"github.com/Anniext/Arkitektur/system/log"
+	"log"
+	"github.com/Anniext/Arkitektur/data"
 	{{if $.HaveRBTree}}
 	"github.com/Anniext/Arkitektur/structs/rbtree"
 	{{end}}
@@ -117,7 +118,7 @@ import (
 	"io/ioutil"
 	{{.DSImport}}
 {{end}}
-	persistCore "github.com/Anniext/persist/core"
+	persistCore "github.com/Anniext/Verktyg/persist/core"
 {{if ne .ArgsInfo.PersistPkgPath ""}}
 	"{{.ArgsInfo.PersistPkgPath}}"
 {{end}}
@@ -893,11 +894,11 @@ func (m *PersistManager) BytesToPersist(data []byte) (cls *Persist) {
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("BytesToPersist Error", err.Error())
+			log.Println("BytesToPersist Error", err.Error())
 		}
 	}()
 	i := 0
@@ -932,7 +933,7 @@ func (m *PersistManager) BytesToPersist(data []byte) (cls *Persist) {
 		i += 4
 		err = jsoniter.ConfigCompatibleWithStandardLibrary.Unmarshal(data[i:i+lenFieldDataValueMap], &cls.ValueMap)
 		if err != nil {
-			log.Infoln("BytesToPersist ValueMap error ", err)
+			log.Println("BytesToPersist ValueMap error ", err)
 		}
 		i += lenFieldDataValueMap
 	} else {
@@ -948,7 +949,7 @@ func (m *PersistManager) BytesToPersist(data []byte) (cls *Persist) {
 		err = jsoniter.ConfigCompatibleWithStandardLibrary.Unmarshal(data[i:i+lenFieldDataStructSyncMap], &cls.StructSyncMap)
 	}
 	if err != nil {
-		log.Infoln("BytesToPersist StructSyncMap error ", err)
+		log.Println("BytesToPersist StructSyncMap error ", err)
 	}
 	i += lenFieldDataStructSyncMap
 
@@ -979,7 +980,7 @@ func (m *PersistManager) BytesToPersist(data []byte) (cls *Persist) {
 				err = jsoniter.ConfigCompatibleWithStandardLibrary.Unmarshal(data[i:i+lenFieldDataStructSyncMapP], &cls.StructSyncMapP)
 			}
 			if err != nil {
-				log.Infoln("BytesToPersist StructSyncMapP error ", err)
+				log.Println("BytesToPersist StructSyncMapP error ", err)
 			}
 			i += lenFieldDataStructSyncMapP
 		} else {
@@ -994,7 +995,7 @@ func (m *PersistManager) BytesToPersist(data []byte) (cls *Persist) {
 	i += 4
 	err = jsoniter.ConfigCompatibleWithStandardLibrary.Unmarshal(data[i:i+lenFieldDataSListMap], &cls.SListMap)
 	if err != nil {
-		log.Infoln("BytesToPersist SListMap error ", err)
+		log.Println("BytesToPersist SListMap error ", err)
 	}
 	i += lenFieldDataSListMap
 
@@ -1042,11 +1043,11 @@ func (m *{{.DataName}}Manager) BytesToPersist(data []byte) (cls *{{.ArgsInfo.Per
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("BytesToPersist Error", err.Error())
+			log.Println("BytesToPersist Error", err.Error())
 		}
 	}()
 	i := 0
@@ -1206,7 +1207,7 @@ func (m *{{.DataName}}Manager) BytesToPersist(data []byte) (cls *{{.ArgsInfo.Per
 							err = jsoniter.ConfigCompatibleWithStandardLibrary.Unmarshal(data[i:i+lenFieldData{{ $fieldName }}], &cls.{{ $fieldName }})
 						}
 						if err != nil {
-							log.Infoln("BytesToPersist {{ $fieldName }} error ", err)
+							log.Println("BytesToPersist {{ $fieldName }} error ", err)
 						}
 						i += lenFieldData{{ $fieldName }}
 					} else {
@@ -1227,7 +1228,7 @@ func (m *{{.DataName}}Manager) BytesToPersist(data []byte) (cls *{{.ArgsInfo.Per
 						err = jsoniter.ConfigCompatibleWithStandardLibrary.Unmarshal(data[i:i+lenFieldData{{ $fieldName }}], &cls.{{ $fieldName }})
 					}
 					if err != nil {
-						log.Infoln("BytesToPersist {{ $fieldName }} error ", err)
+						log.Println("BytesToPersist {{ $fieldName }} error ", err)
 					}
 					i += lenFieldData{{ $fieldName }}
 				} else {
@@ -1245,7 +1246,7 @@ func (m *{{.DataName}}Manager) BytesToPersist(data []byte) (cls *{{.ArgsInfo.Per
 						i += 4
 						err = jsoniter.ConfigCompatibleWithStandardLibrary.Unmarshal(data[i:i+lenFieldData{{ $fieldName }}], &cls.{{ $fieldName }})
 						if err != nil {
-							log.Infoln("BytesToPersist {{ $fieldName }} error ", err)
+							log.Println("BytesToPersist {{ $fieldName }} error ", err)
 						}
 						i += lenFieldData{{ $fieldName }}
 					} else {
@@ -1262,7 +1263,7 @@ func (m *{{.DataName}}Manager) BytesToPersist(data []byte) (cls *{{.ArgsInfo.Per
 					i += 4
 					err = jsoniter.ConfigCompatibleWithStandardLibrary.Unmarshal(data[i:i+lenFieldData{{ $fieldName }}], &cls.{{ $fieldName }})
 					if err != nil {
-						log.Infoln("BytesToPersist {{ $fieldName }} error ", err)
+						log.Println("BytesToPersist {{ $fieldName }} error ", err)
 					}
 					i += lenFieldData{{ $fieldName }}
 				} else {
@@ -1286,11 +1287,11 @@ func (m *PersistManager) PersistToBytes(cls *Persist, bitSet PersistBitSet) (dat
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("PersistToBytes Error", err.Error())
+			log.Println("PersistToBytes Error", err.Error())
 		}
 	}()
 	size := 0
@@ -1314,7 +1315,7 @@ func (m *PersistManager) PersistToBytes(cls *Persist, bitSet PersistBitSet) (dat
 	if bitSet.Get(EPersistFieldIndexUid) {
 		fieldDataValueMap, err = jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(cls.ValueMap)
 		if err != nil {
-			log.Infoln("PersistToBytes ValueMap error ", err)
+			log.Println("PersistToBytes ValueMap error ", err)
 		}
 		size += 1 + 4 + len(fieldDataValueMap)
 	} else {
@@ -1329,7 +1330,7 @@ func (m *PersistManager) PersistToBytes(cls *Persist, bitSet PersistBitSet) (dat
 		fieldDataStructSyncMap, err = jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(cls.StructSyncMap)
 	}
 	if err != nil {
-		log.Infoln("PersistToBytes StructSyncMap error ", err)
+		log.Println("PersistToBytes StructSyncMap error ", err)
 	}
 	size += 4 + len(fieldDataStructSyncMap)
 
@@ -1352,7 +1353,7 @@ func (m *PersistManager) PersistToBytes(cls *Persist, bitSet PersistBitSet) (dat
 				fieldDataStructSyncMapP, err = jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(cls.StructSyncMapP)
 			}
 			if err != nil {
-				log.Infoln("PersistToBytes StructSyncMapP error ", err)
+				log.Println("PersistToBytes StructSyncMapP error ", err)
 			}
 			size += 1 + 4 + len(fieldDataStructSyncMapP)
 		}
@@ -1364,7 +1365,7 @@ func (m *PersistManager) PersistToBytes(cls *Persist, bitSet PersistBitSet) (dat
 	var fieldDataSListMap []byte
 	fieldDataSListMap, err = jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(cls.SListMap)
 	if err != nil {
-		log.Infoln("PersistToBytes SListMap error ", err)
+		log.Println("PersistToBytes SListMap error ", err)
 	}
 	size += 4 + len(fieldDataSListMap)
 
@@ -1555,11 +1556,11 @@ func (m *{{.DataName}}Manager) PersistToBytes(cls *{{.ArgsInfo.PersistPkgName}}.
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("PersistToBytes Error", err.Error())
+			log.Println("PersistToBytes Error", err.Error())
 		}
 	}()
 	size := 0
@@ -1683,7 +1684,7 @@ func (m *{{.DataName}}Manager) PersistToBytes(cls *{{.ArgsInfo.PersistPkgName}}.
 							fieldData{{ $fieldName }}, err = jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(cls.{{ $fieldName }})
 						}
 						if err != nil {
-							log.Infoln("PersistToBytes {{ $fieldName }} error ", err)
+							log.Println("PersistToBytes {{ $fieldName }} error ", err)
 						}
 						size += 1 + 4 + len(fieldData{{ $fieldName }})
 					}
@@ -1699,7 +1700,7 @@ func (m *{{.DataName}}Manager) PersistToBytes(cls *{{.ArgsInfo.PersistPkgName}}.
 						fieldData{{ $fieldName }}, err = jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(cls.{{ $fieldName }})
 					}
 					if err != nil {
-						log.Infoln("PersistToBytes {{ $fieldName }} error ", err)
+						log.Println("PersistToBytes {{ $fieldName }} error ", err)
 					}
 					size += 1 + 4 + len(fieldData{{ $fieldName }})
 				} else {
@@ -1717,7 +1718,7 @@ func (m *{{.DataName}}Manager) PersistToBytes(cls *{{.ArgsInfo.PersistPkgName}}.
 					} else {
 						fieldData{{ $fieldName }}, err = jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(cls.{{ $fieldName }})
 						if err != nil {
-							log.Infoln("PersistToBytes {{ $fieldName }} error ", err)
+							log.Println("PersistToBytes {{ $fieldName }} error ", err)
 						}
 						size += 1 + 4 + len(fieldData{{ $fieldName }})
 					}
@@ -1729,7 +1730,7 @@ func (m *{{.DataName}}Manager) PersistToBytes(cls *{{.ArgsInfo.PersistPkgName}}.
 				if {{ if $typeInfo.IsPk }} true || {{end}} bitSet.Get(E{{$.DataName}}FieldIndex{{ $fieldName }}) {
 					fieldData{{ $fieldName }}, err = jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(&cls.{{ $fieldName }})
 					if err != nil {
-						log.Infoln("PersistToBytes {{ $fieldName }} error ", err)
+						log.Println("PersistToBytes {{ $fieldName }} error ", err)
 					}
 					size += 1 + 4 + len(fieldData{{ $fieldName }})
 				} else {
@@ -1997,16 +1998,16 @@ func (m *{{.DataName}}Manager) PersistToBytes(cls *{{.ArgsInfo.PersistPkgName}}.
 func (m *PersistManager) PersistToPersistByBitSet(dst, src *Persist, bitSet PersistBitSet) {
 	var err error
 	if dst == nil || src == nil {
-		log.Infoln("PersistToPersistByBitSet Error, dst or src is nil")
+		log.Println("PersistToPersistByBitSet Error, dst or src is nil")
 		return
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("PersistToPersistByBitSet Error", err.Error())
+			log.Println("PersistToPersistByBitSet Error", err.Error())
 		}
 	}()
 
@@ -2026,16 +2027,16 @@ func (m *PersistManager) PersistToPersistByBitSet(dst, src *Persist, bitSet Pers
 func (m *{{.DataName}}Manager) PersistToPersistByBitSet(dst, src *{{.ArgsInfo.PersistPkgName}}.{{.DataName}}, bitSet {{.DataName}}BitSet) {
 	var err error
 	if dst == nil || src == nil {
-		log.Infoln("PersistToPersistByBitSet Error, dst or src is nil")
+		log.Println("PersistToPersistByBitSet Error, dst or src is nil")
 		return
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("PersistToPersistByBitSet Error", err.Error())
+			log.Println("PersistToPersistByBitSet Error", err.Error())
 		}
 	}()
 
@@ -2059,11 +2060,11 @@ func (m *PersistManager) BytesToPersistSync(data []byte) (persistSync *PersistSy
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("BytesToPersistSync Error", err.Error())
+			log.Println("BytesToPersistSync Error", err.Error())
 		}
 	}()
 	i := 0
@@ -2095,11 +2096,11 @@ func (m *{{.DataName}}Manager) BytesToPersistSync(data []byte) (persistSync *{{.
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("BytesToPersistSync Error", err.Error())
+			log.Println("BytesToPersistSync Error", err.Error())
 		}
 	}()
 	i := 0
@@ -2133,11 +2134,11 @@ func (m *PersistManager) PersistSyncToBytes(persistSync *PersistSync) (data []by
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("PersistSyncToBytes Error", err.Error())
+			log.Println("PersistSyncToBytes Error", err.Error())
 		}
 	}()
 	size := 0
@@ -2172,11 +2173,11 @@ func (m *{{.DataName}}Manager) PersistSyncToBytes(persistSync *{{.DataName}}Sync
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("PersistSyncToBytes Error", err.Error())
+			log.Println("PersistSyncToBytes Error", err.Error())
 		}
 	}()
 	size := 0
@@ -2268,11 +2269,11 @@ func (m *PersistManager) UnmarshalFailQueue(data []byte, failQueue *[]*PersistSy
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("UnmarshalFailQueue Error", err.Error())
+			log.Println("UnmarshalFailQueue Error", err.Error())
 		}
 	}()
 	i := 0
@@ -2297,11 +2298,11 @@ func (m *{{.DataName}}Manager) UnmarshalFailQueue(data []byte, failQueue *[]*{{.
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("UnmarshalFailQueue Error", err.Error())
+			log.Println("UnmarshalFailQueue Error", err.Error())
 		}
 	}()
 	i := 0
@@ -2326,11 +2327,11 @@ func (m *PersistManager) MarshalFailQueue(failQueue []*PersistSync) (data []byte
 	var persistSync *PersistSync
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("MarshalFailQueue Error", err.Error())
+			log.Println("MarshalFailQueue Error", err.Error())
 		}
 	}()
 	persistSyncDataList := make([][]byte, len(failQueue))
@@ -2363,11 +2364,11 @@ func (m *{{.DataName}}Manager) MarshalFailQueue(failQueue []*{{.DataName}}Sync) 
 	var persistSync *{{.DataName}}Sync
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 		}
 		if err != nil {
-			log.Infoln("MarshalFailQueue Error", err.Error())
+			log.Println("MarshalFailQueue Error", err.Error())
 		}
 	}()
 	persistSyncDataList := make([][]byte, len(failQueue))
@@ -2708,7 +2709,7 @@ func (m *PersistManager) NewPersist(cls *Persist) (*Persist, error) {
 
 		persistSync := &PersistSync{Data: newCls, Op: EPersistOpInsert, BitSet: bitSet}
 		{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-			log.Infoln("[sql trace Persist]", m.PersistSyncToString(persistSync))
+			log.Println("[sql trace Persist]", m.PersistSyncToString(persistSync))
 		{{end}}
 		m.syncChan <- persistSync
 
@@ -2764,7 +2765,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 
 		persistSync := &{{.DataName}}Sync{Data: newCls, Op: E{{.DataName}}OpInsert, BitSet: bitSet}
 		{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-			log.Infoln("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
+			log.Println("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
 		{{end}}
 		m.syncChan <- persistSync
 
@@ -2818,7 +2819,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 
 	//	persistSync := &PersistSync{Data: newCls, Op: EPersistOpDelete}
 	//	{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-	//		log.Infoln("[sql trace Persist]", m.PersistSyncToString(persistSync))
+	//		log.Println("[sql trace Persist]", m.PersistSyncToString(persistSync))
 	//	{{end}}
 	//	m.syncChan <- persistSync
 
@@ -2863,7 +2864,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 
 		persistSync := &PersistSync{Data: newCls, Op: EPersistOpDelete}
 		{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-			log.Infoln("[sql trace Persist]", m.PersistSyncToString(persistSync))
+			log.Println("[sql trace Persist]", m.PersistSyncToString(persistSync))
 		{{end}}
 		m.syncChan <- persistSync
 
@@ -2916,7 +2917,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 		//
 		//	persistSync := &{{.DataName}}Sync{Data: newCls, Op: E{{.DataName}}OpDelete}
 		//	{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-			//	log.Infoln("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
+			//	log.Println("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
 			{{end}}
 		//	m.syncChan <- persistSync
 		//
@@ -2971,7 +2972,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 
 			persistSync := &{{.DataName}}Sync{Data: newCls, Op: E{{.DataName}}OpDelete, BitSet: bitSet}
 			{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-				log.Infoln("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
+				log.Println("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
 			{{end}}
 			m.syncChan <- persistSync
 
@@ -3011,7 +3012,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 
 	//			persistSync := &PersistSync{Data: newCls, Op: EPersistOpDelete}
 	//			{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-	//				log.Infoln("[sql trace Persist]", m.PersistSyncToString(persistSync))
+	//				log.Println("[sql trace Persist]", m.PersistSyncToString(persistSync))
 	//			{{end}}
 	//			m.syncChan <- persistSync
 
@@ -3043,7 +3044,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 
 				persistSync := &PersistSync{Data: newCls, Op: EPersistOpDelete}
 				{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-					log.Infoln("[sql trace Persist]", m.PersistSyncToString(persistSync))
+					log.Println("[sql trace Persist]", m.PersistSyncToString(persistSync))
 				{{end}}
 				m.syncChan <- persistSync
 
@@ -3079,7 +3080,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 			//
 			//		persistSync := &{{.DataName}}Sync{Data: newCls, Op: E{{.DataName}}OpDelete}
 			//		{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-				//		log.Infoln("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
+				//		log.Println("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
 			//		{{end}}
 			//		m.syncChan <- persistSync
 
@@ -3117,7 +3118,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 
 					persistSync := &{{.DataName}}Sync{Data: newCls, Op: E{{.DataName}}OpDelete, BitSet: bitSet}
 					{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-						log.Infoln("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
+						log.Println("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
 					{{end}}
 					m.syncChan <- persistSync
 
@@ -3152,7 +3153,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 
 			persistSync := &AccountGlobalSync{Data: newCls, Op: EAccountGlobalOpDelete}
 
-			log.Infoln("[sql trace AccountGlobal]", m.PersistSyncToString(persistSync))
+			log.Println("[sql trace AccountGlobal]", m.PersistSyncToString(persistSync))
 
 			m.syncChan <- persistSync
 
@@ -3194,7 +3195,7 @@ func (m *{{.DataName}}Manager) New{{.DataName}}(cls *{{.ArgsInfo.PersistPkgName}
 
 				persistSync := &{{.DataName}}Sync{Data: newCls, Op: E{{.DataName}}OpDelete}
 				{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-					log.Infoln("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
+					log.Println("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
 				{{end}}
 				m.syncChan <- persistSync
 
@@ -3490,7 +3491,7 @@ func (m *PersistManager) MarkUpdate(cls *Persist) error {
 
 	persistSync := &PersistSync{Data: newCls, Op: E{{.DataName}}OpUpdate, BitSet: bitSet}
 	{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-		log.Infoln("[sql trace Persist]", m.PersistSyncToString(persistSync))
+		log.Println("[sql trace Persist]", m.PersistSyncToString(persistSync))
 	{{end}}
 	m.syncChan <- persistSync
 
@@ -3534,7 +3535,7 @@ func (m *{{.DataName}}Manager) MarkUpdate(cls *{{.ArgsInfo.PersistPkgName}}.{{.D
 
 	persistSync := &{{.DataName}}Sync{Data: newCls, Op: E{{.DataName}}OpUpdate, BitSet: bitSet}
 	{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-		log.Infoln("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
+		log.Println("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
 	{{end}}
 	m.syncChan <- persistSync
 
@@ -3572,7 +3573,7 @@ func (m *PersistManager) MarkUpdateByBitSet(cls *Persist, bitSet PersistBitSet) 
 
 	persistSync := &PersistSync{Data: newCls, Op: EPersistOpUpdate, BitSet: bitSet}
 	{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-		log.Infoln("[sql trace Persist]", m.PersistSyncToString(persistSync))
+		log.Println("[sql trace Persist]", m.PersistSyncToString(persistSync))
 	{{end}}
 	m.syncChan <- persistSync
 
@@ -3627,7 +3628,7 @@ func (m *{{.DataName}}Manager) MarkUpdateByBitSet(cls *{{.ArgsInfo.PersistPkgNam
 
 	persistSync := &{{.DataName}}Sync{Data: newCls, Op: E{{.DataName}}OpUpdate, BitSet: bitSet}
 	{{if .ArgsInfo.OptimizeFlagTraceSwitch}}
-		log.Infoln("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
+		log.Println("[sql trace {{.DataName}}]", m.PersistSyncToString(persistSync))
 	{{end}}
 	m.syncChan <- persistSync
 
@@ -3882,7 +3883,7 @@ func (m *{{.DataName}}Manager) MarkUpdateByFieldIndex(cls *{{.ArgsInfo.PersistPk
 {{if $.ArgsInfo.Save}}
 	// LoadAll (非线程安全) 导入所有数据, 全导入后只能全导出, 不能再按照key导入导出
 	func (m *PersistManager) LoadAll() (err error) {
-		log.Infoln("PersistManager LoadAll begin")
+		log.Println("PersistManager LoadAll begin")
 		// 未全导入状态切换到全导入
 		if atomic.CompareAndSwapInt32(&m.loadAll, EPersistTableStateDisk, EPersistTableStateLoading){
 			rows := make([]*Persist, 0)
@@ -3905,7 +3906,7 @@ func (m *{{.DataName}}Manager) MarkUpdateByFieldIndex(cls *{{.ArgsInfo.PersistPk
 		} else {
 			return persistCore.EPersistErrorIncorrectState
 		}
-		log.Infoln("PersistManager LoadAll end")
+		log.Println("PersistManager LoadAll end")
 		return
 	}
 	{{end}}
@@ -3914,7 +3915,7 @@ func (m *{{.DataName}}Manager) MarkUpdateByFieldIndex(cls *{{.ArgsInfo.PersistPk
 	{{if $.ArgsInfo.Save}}
 		// LoadAll (非线程安全) 导入所有数据, 全导入后只能全导出, 不能再按照key导入导出
 		func (m *{{.DataName}}Manager) LoadAll() (err error) {
-			log.Infoln("{{.DataName}}Manager LoadAll begin")
+			log.Println("{{.DataName}}Manager LoadAll begin")
 			// 未全导入状态切换到全导入
 			if atomic.CompareAndSwapInt32(&m.loadAll, E{{.DataName}}TableStateDisk, E{{.DataName}}TableStateLoading){
 				rows := make([]*{{.ArgsInfo.PersistPkgName}}.{{.DataName}}, 0)
@@ -3937,7 +3938,7 @@ func (m *{{.DataName}}Manager) MarkUpdateByFieldIndex(cls *{{.ArgsInfo.PersistPk
 			} else {
 				return persistCore.EPersistErrorIncorrectState
 			}
-			log.Infoln("{{.DataName}}Manager LoadAll end")
+			log.Println("{{.DataName}}Manager LoadAll end")
 			return
 		}
 	{{end}}
@@ -4569,19 +4570,16 @@ func (m *{{.DataName}}Manager) MarkUpdateByFieldIndex(cls *{{.ArgsInfo.PersistPk
 var GPersistManager *PersistManager
 // init 注册管理类
 func init() {
-	if data.GetDB == nil {
-		log.Infoln(persistCore.EPersistErrorEngineNil)
+	engine := data.GetDB()
+	if engine == nil {
+		log.Println(persistCore.EPersistErrorEngineNil)
 		persistCore.RegisterPersistLazy("Persist", GPersistManager)
 		return
 	}
-	engine := data.GetDB()
-	if engine == nil {
-		log.Infoln(persistCore.EPersistErrorEngineNil)
-		return
-	}
+
 	GPersistManager = NewPersistManager(engine)
 {{if $.ArgsInfo.Save}}
-	Register("Persist", GPersistManager)
+	data.Register("Persist", GPersistManager)
 	// go GPersistManager.Collect()
 	//for idx, name := range PersistStructFiledMap {
 	//	PersistDBFiledMap[idx] = engine.GetColumnMapper().Obj2Table(name)
@@ -4593,18 +4591,15 @@ var G{{.DataName}}Manager *{{.DataName}}Manager
 // init 注册管理类
 func init() {
 {{if $.ArgsInfo.Save}}
-	if data.GetDB == nil {
-		log.Infoln(persistCore.EPersistErrorEngineNil)
+	engine := data.GetDB()
+	if engine == nil {
+		log.Println(persistCore.EPersistErrorEngineNil)
 		persistCore.RegisterPersistLazy("{{.DataName}}", G{{.DataName}}Manager)
 		return
 	}
-	engine := data.GetDB()
-	if engine == nil {
-		log.Infoln(persistCore.EPersistErrorEngineNil)
-		return
-	}
+
 	G{{.DataName}}Manager = New{{.DataName}}Manager(engine)
-	Register("{{.DataName}}", G{{.DataName}}Manager)
+	data.Register("{{.DataName}}", G{{.DataName}}Manager)
 	// go G{{.DataName}}Manager.Collect()
 
 	//for idx, name := range {{.DataName}}StructFiledMap {
@@ -4629,7 +4624,7 @@ func (m *PersistManager) LazyInit() (err error) {
 		return
 	}
 	GPersistManager = NewPersistManager(engine)
-	Register("Persist", GPersistManager)
+	data.Register("Persist", GPersistManager)
 	return
 }
 {{*/}}
@@ -4646,7 +4641,7 @@ func (m *{{.DataName}}Manager) LazyInit() (err error) {
 		return
 	}
 	G{{.DataName}}Manager = New{{.DataName}}Manager(engine)
-	Register("{{.DataName}}", G{{.DataName}}Manager)
+	data.Register("{{.DataName}}", G{{.DataName}}Manager)
 {{end}}
 	return
 }
@@ -4664,7 +4659,7 @@ func (m *PersistManager) noneFunc() {
 	_ = time.Now()
 	_ = sentry.Client{}
 	_ = strings.Builder{}
-	log.Infoln("none")
+	log.Println("none")
 }
 {{*/}}
 // noneFunc 惰性创建注册初始化
@@ -4677,7 +4672,7 @@ func (m *{{.DataName}}Manager) noneFunc() {
 	_ = time.Now()
 	_ = sentry.Client{}
 	_ = strings.Builder{}
-	log.Infoln("none")
+	log.Println("none")
 }
 
 
@@ -4713,8 +4708,8 @@ func NewInit{{.DataName}}() {
 func (m *PersistManager) SaveDB(session *xorm.Session, persistSync *PersistSync) (err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 			if err == nil {
 				err = errors.New("unknown error")
 			}
@@ -4724,7 +4719,7 @@ func (m *PersistManager) SaveDB(session *xorm.Session, persistSync *PersistSync)
 	case EPersistOpInsert:
 		_, err = session.Insert(persistSync.Data)
 		if err != nil {
-			log.Infoln("insert error ", err, "[sql error Persist]", m.PersistSyncToString(persistSync))
+			log.Println("insert error ", err, "[sql error Persist]", m.PersistSyncToString(persistSync))
 			return
 		}
 	case EPersistOpUpdate:
@@ -4733,7 +4728,7 @@ func (m *PersistManager) SaveDB(session *xorm.Session, persistSync *PersistSync)
 		if bitSet.IsSetAll() {
 			_, err = session.ID(core.NewPK(cls.Uid, cls.Id)).AllCols().Update(cls)
 			if err != nil {
-				log.Infoln("update error ", err, "[sql error Persist]", m.PersistSyncToString(persistSync))
+				log.Println("update error ", err, "[sql error Persist]", m.PersistSyncToString(persistSync))
 				return
 			}
 		} else {
@@ -4746,13 +4741,13 @@ func (m *PersistManager) SaveDB(session *xorm.Session, persistSync *PersistSync)
 			if nameList != nil {
 				_, err = session.ID(core.NewPK(cls.Uid, cls.Id)).Cols(nameList...).Update(cls)
 				if err != nil {
-					log.Infoln("update error ", err, "[sql error Persist]", m.PersistSyncToString(persistSync))
+					log.Println("update error ", err, "[sql error Persist]", m.PersistSyncToString(persistSync))
 					return
 				}
 			} else {
 				_, err = session.ID(core.NewPK(cls.Uid, cls.Id)).AllCols().Update(cls)
 				if err != nil {
-					log.Infoln("update error ", err, "[sql error Persist]", m.PersistSyncToString(persistSync))
+					log.Println("update error ", err, "[sql error Persist]", m.PersistSyncToString(persistSync))
 					return
 				}
 			}
@@ -4761,7 +4756,7 @@ func (m *PersistManager) SaveDB(session *xorm.Session, persistSync *PersistSync)
 		cls := persistSync.Data
 		_, err = session.ID(core.NewPK(cls.Uid, cls.Id, )).Delete(gPersistNil)
 		if err != nil {
-			log.Infoln("delete error ", err, "[sql error Persist]", m.PersistSyncToString(persistSync))
+			log.Println("delete error ", err, "[sql error Persist]", m.PersistSyncToString(persistSync))
 			return
 		}
 	case EPersistOpUnload:
@@ -4793,8 +4788,8 @@ func (m *PersistManager) SaveDB(session *xorm.Session, persistSync *PersistSync)
 	func (m *{{.DataName}}Manager) SaveDB(session *xorm.Session, persistSync *{{.DataName}}Sync) (err error) {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Infoln("recovered in ", r)
-				log.Infoln("stack: ", string(debug.Stack()))
+				log.Println("recovered in ", r)
+				log.Println("stack: ", string(debug.Stack()))
 				if err == nil {
 					err = errors.New("unknown error")
 				}
@@ -4808,7 +4803,7 @@ func (m *PersistManager) SaveDB(session *xorm.Session, persistSync *PersistSync)
 			_, err = session.Insert(persistSync.Data)
             {{end}}
 			if err != nil {
-				log.Infoln("insert error ", err, "[sql error {{.DataName}}]", m.PersistSyncToString(persistSync))
+				log.Println("insert error ", err, "[sql error {{.DataName}}]", m.PersistSyncToString(persistSync))
 				return
 			}
 		{{if .HashIndexPk}}
@@ -4818,7 +4813,7 @@ func (m *PersistManager) SaveDB(session *xorm.Session, persistSync *PersistSync)
 				if bitSet.IsSetAll() {
 					_, err = session.ID(core.NewPK({{.HashIndexPk.ClsPointKeys}})).AllCols().Update(cls)
 					if err != nil {
-						log.Infoln("update error ", err, "[sql error {{.DataName}}]", m.PersistSyncToString(persistSync))
+						log.Println("update error ", err, "[sql error {{.DataName}}]", m.PersistSyncToString(persistSync))
 						return
 					}
 				} else {
@@ -4831,13 +4826,13 @@ func (m *PersistManager) SaveDB(session *xorm.Session, persistSync *PersistSync)
 					if nameList != nil {
 						_, err = session.ID(core.NewPK({{.HashIndexPk.ClsPointKeys}})).Cols(nameList...).Update(cls)
 						if err != nil {
-							log.Infoln("update error ", err, "[sql error {{.DataName}}]", m.PersistSyncToString(persistSync))
+							log.Println("update error ", err, "[sql error {{.DataName}}]", m.PersistSyncToString(persistSync))
 							return
 						}
 					} else {
 						_, err = session.ID(core.NewPK({{.HashIndexPk.ClsPointKeys}})).AllCols().Update(cls)
 						if err != nil {
-							log.Infoln("update error ", err, "[sql error {{.DataName}}]", m.PersistSyncToString(persistSync))
+							log.Println("update error ", err, "[sql error {{.DataName}}]", m.PersistSyncToString(persistSync))
 							return
 						}
 					}
@@ -4847,7 +4842,7 @@ func (m *PersistManager) SaveDB(session *xorm.Session, persistSync *PersistSync)
 				cls := persistSync.Data
 				_, err = session.ID(core.NewPK({{.HashIndexPk.ClsPointKeys}})).Delete(g{{.DataName}}Nil)
 				if err != nil {
-					log.Infoln("delete error ", err, "[sql error {{.DataName}}]", m.PersistSyncToString(persistSync))
+					log.Println("delete error ", err, "[sql error {{.DataName}}]", m.PersistSyncToString(persistSync))
 					return
 				}
 			{{if .HashIndexUnload}}
@@ -5056,16 +5051,16 @@ func (m *PersistManager) SaveFile() {
 
 	data, err := m.MarshalFailQueue(m.FailQueue)
 	if err != nil {
-		log.Infoln("SaveFile marshal error ", err)
+		log.Println("SaveFile marshal error ", err)
 	}
 	_ = os.Mkdir("./G_MyProjectGo_demo_src_menet_persist_tests_model", 0770)
 	err = ioutil.WriteFile("./???Data???/_Persist.tmp", append([]byte("Persist "), data...), 0660)
 	if err != nil {
-		log.Infoln("SaveFile write temp file error ", err)
+		log.Println("SaveFile write temp file error ", err)
 	}
 	err = ioutil.WriteFile("./???Data???/_Persist.bomb", append([]byte("Persist "), data...), 0660)
 	if err != nil {
-		log.Infoln("SaveFile write bomb file error ", err)
+		log.Println("SaveFile write bomb file error ", err)
 	}
 	_ = os.Remove("./G_MyProjectGo_demo_src_menet_persist_tests_model/Persist.tmp")
 }
@@ -5079,16 +5074,16 @@ func (m *PersistManager) SaveFile() {
 
 		data, err := m.MarshalFailQueue(m.FailQueue)
 		if err != nil {
-			log.Infoln("SaveFile marshal error ", err)
+			log.Println("SaveFile marshal error ", err)
 		}
 		_ = os.Mkdir("{{.ArgsInfo.BombDir}}", 0770)
 		err = ioutil.WriteFile("{{.ArgsInfo.BombDir}}/{{.DataName}}.tmp", append([]byte("{{.DataName}} "), data...), 0660)
 		if err != nil {
-			log.Infoln("SaveFile write temp file error ", err)
+			log.Println("SaveFile write temp file error ", err)
 		}
 		err = ioutil.WriteFile("{{.ArgsInfo.BombDir}}/{{.DataName}}.bomb", append([]byte("{{.DataName}} "), data...), 0660)
 		if err != nil {
-			log.Infoln("SaveFile write bomb file error ", err)
+			log.Println("SaveFile write bomb file error ", err)
 		}
 		_ = os.Remove("{{.ArgsInfo.BombDir}}/{{.DataName}}.tmp")
 	}
@@ -5528,17 +5523,17 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 	bTime := time.Now().UnixNano()
 	defer func() {
 		if r := recover(); r != nil {
-			log.Infoln("recovered in ", r)
-			log.Infoln("stack: ", string(debug.Stack()))
+			log.Println("recovered in ", r)
+			log.Println("stack: ", string(debug.Stack()))
 			if !queueEmpty {
-				log.Infoln("save failed: incrementalSave")
+				log.Println("save failed: incrementalSave")
 			}
 		} else {
 			if !queueEmpty {
 				if err == nil {
-					log.Infoln("save success: incrementalSave")
+					log.Println("save success: incrementalSave")
 				} else {
-					log.Infoln("save failed: incrementalSave")
+					log.Println("save failed: incrementalSave")
 				}
 			}
 		}
@@ -5560,7 +5555,7 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 	session := m.engine.NewSession()
 	defer session.Close()
 
-	log.Infoln("begin incrementalSave", bTime)
+	log.Println("begin incrementalSave", bTime)
 
 	if len(m.FailQueue) > 0 {
 		tmpQueue := make([]*PersistSync, len(m.FailQueue)+len(*m.syncQueue))
@@ -5611,7 +5606,7 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 			}
 			_, err = session.InsertMulti(insertArray[:])
 			if err != nil {
-				log.Infoln("InsertMulti error ", err)
+				log.Println("InsertMulti error ", err)
 				return false
 			}
 		}
@@ -5623,7 +5618,7 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 			}
 			_, err = session.InsertMulti(insertArray[:remainder])
 			if err != nil {
-				log.Infoln("InsertMulti error ", err)
+				log.Println("InsertMulti error ", err)
 				return false
 			}
 		}
@@ -5687,17 +5682,17 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 		bTime := time.Now().UnixNano()
 		defer func() {
 			if r := recover(); r != nil {
-				log.Infoln("recovered in ", r)
-				log.Infoln("stack: ", string(debug.Stack()))
+				log.Println("recovered in ", r)
+				log.Println("stack: ", string(debug.Stack()))
 				if !queueEmpty {
-					log.Infoln("save failed: incrementalSave")
+					log.Println("save failed: incrementalSave")
 				}
 			} else {
 				if !queueEmpty {
 					if err == nil {
-						log.Infoln("save success: incrementalSave")
+						log.Println("save success: incrementalSave")
 					} else {
-						log.Infoln("save failed: incrementalSave")
+						log.Println("save failed: incrementalSave")
 					}
 				}
 			}
@@ -5719,7 +5714,7 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 		session := m.engine.NewSession()
 		defer session.Close()
 
-		log.Infoln("begin incrementalSave", bTime)
+		log.Println("begin incrementalSave", bTime)
 
 		{{if .ArgsInfo.OptimizeFlagSQLMerge}}
 			if len(m.FailQueue) > 0 {
@@ -5776,7 +5771,7 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 					_, err = session.InsertMulti(insertArray[:])
 					{{end}}
 					if err != nil {
-						log.Infoln("InsertMulti error ", err)
+						log.Println("InsertMulti error ", err)
 						return false
 					}
 				}
@@ -5793,7 +5788,7 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 					_, err = session.InsertMulti(insertArray[:remainder])
 					{{end}}
 					if err != nil {
-						log.Infoln("InsertMulti error ", err)
+						log.Println("InsertMulti error ", err)
 						return false
 					}
 				}
@@ -5996,7 +5991,7 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 			baseName := m.engine.TableName(g{{.DataName}}Nil)
 			changeTable := fmt.Sprintf("%s_%s",baseName,changeDay.Format("20060102"))
 			if changeTable != Get{{.DataName}}TableName(){
-				log.Infoln("create new table :",changeTable,time.Now())
+				log.Println("create new table :",changeTable,time.Now())
 				m.engine.Table(changeTable).Sync2(g{{.DataName}}Nil)
 				Change{{.DataName}}TableName(changeTable)
 			}
@@ -6022,7 +6017,7 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 			baseName := m.engine.TableName(gPersistNil)
 			changeTable := fmt.Sprintf("%s_%s",baseName,changeDay.Format("20060102"))
 			if changeTable != GetPersistTableName(){
-				log.Infoln("create new table :",changeTable,time.Now())
+				log.Println("create new table :",changeTable,time.Now())
 				m.engine.Table(changeTable).Sync2(gPersistNil)
 				ChangePersistTableName(changeTable)
 			}
@@ -6047,7 +6042,7 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 			baseName := m.engine.TableName(g{{.DataName}}Nil)
 			changeTable := fmt.Sprintf("%s_%s",baseName,changeDay.Format("20060102"))
 			if changeTable != Get{{.DataName}}TableName(){
-				log.Infoln("create new table :",changeTable,time.Now())
+				log.Println("create new table :",changeTable,time.Now())
 				m.engine.Table(changeTable).Sync2(g{{.DataName}}Nil)
 				Change{{.DataName}}TableName(changeTable)
 			}
@@ -6105,11 +6100,11 @@ func (m *PersistManager) AsyncSave() (exit bool) {
 // compareAndUpdate 比较数据库，不相同则更新
 func (m *PersistManager) compareAndUpdate(session *xorm.Session, cls *Persist,sentryDebug bool) (err error) {
 	update := func(session *xorm.Session, cls *Persist, memData, dbData string) {
-		log.Infoln("SyncData error. missing mark Mem. [sql error {{.DataName}}]", memData)
-		log.Infoln("SyncData error. missing mark  Db. [sql error {{.DataName}}]", dbData)
+		log.Println("SyncData error. missing mark Mem. [sql error {{.DataName}}]", memData)
+		log.Println("SyncData error. missing mark  Db. [sql error {{.DataName}}]", dbData)
 		_, err = session.ID(core.NewPK(cls.Uid, cls.Id)).AllCols().Update(cls)
 		if err != nil {
-			log.Infoln("SyncData update error.", err, "[sql error {{.DataName}}]", m.PersistSyncToString(&PersistSync{
+			log.Println("SyncData update error.", err, "[sql error {{.DataName}}]", m.PersistSyncToString(&PersistSync{
 				Data:   cls,
 				Op:     E{{.DataName}}OpUpdate,
 				BitSet: m.bitSetAll,
@@ -6120,8 +6115,8 @@ func (m *PersistManager) compareAndUpdate(session *xorm.Session, cls *Persist,se
 	resetTimeNSec := func(clsMem, clsDb *Persist) {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Infoln("recovered in ", r)
-				log.Infoln("stack: ", string(debug.Stack()))
+				log.Println("recovered in ", r)
+				log.Println("stack: ", string(debug.Stack()))
 			}
 		}()
 		typeF := reflect.TypeOf(*clsMem)
@@ -6152,7 +6147,7 @@ func (m *PersistManager) compareAndUpdate(session *xorm.Session, cls *Persist,se
 	var has bool
 	has, err = session.Get(dbCls)
 	if err != nil || !has {
-		log.Infoln("SyncData query error.", err, "[sql error {{.DataName}}]", m.PersistSyncToString(&PersistSync{
+		log.Println("SyncData query error.", err, "[sql error {{.DataName}}]", m.PersistSyncToString(&PersistSync{
 			Data:   cls,
 			Op:     0,
 			BitSet: m.bitSetAll,
@@ -6253,8 +6248,8 @@ func (m *PersistManager) SyncUserData(uid int32) (err error) {
 	func() {
 		defer func() {
 			if r := recover(); r != nil {
-				log.Infoln("recovered in ", r)
-				log.Infoln("stack: ", string(debug.Stack()))
+				log.Println("recovered in ", r)
+				log.Println("stack: ", string(debug.Stack()))
 				err = errors.New("SyncUserData error")
 			}
 		}()
@@ -6294,11 +6289,11 @@ func (m *PersistManager) SyncUserData(uid int32) (err error) {
 	// compareAndUpdate 比较数据库，不相同则更新
 	func (m *{{.DataName}}Manager) compareAndUpdate(session *xorm.Session, cls *{{.ArgsInfo.PersistPkgName}}.{{.DataName}},sentryDebug bool) (err error) {
 		update := func(session *xorm.Session, cls *{{.ArgsInfo.PersistPkgName}}.{{.DataName}}, memData, dbData string) {
-			log.Infoln("SyncData error. missing mark Mem. [sql error {{.DataName}}]", memData)
-			log.Infoln("SyncData error. missing mark  Db. [sql error {{.DataName}}]", dbData)
+			log.Println("SyncData error. missing mark Mem. [sql error {{.DataName}}]", memData)
+			log.Println("SyncData error. missing mark  Db. [sql error {{.DataName}}]", dbData)
 			_, err = session.ID(core.NewPK({{.HashIndexPk.ClsPointKeys}})).AllCols().Update(cls)
 			if err != nil {
-				log.Infoln("SyncData update error.", err, "[sql error {{.DataName}}]", m.PersistSyncToString(&{{.DataName}}Sync{
+				log.Println("SyncData update error.", err, "[sql error {{.DataName}}]", m.PersistSyncToString(&{{.DataName}}Sync{
 					Data:   cls,
 					Op:     E{{.DataName}}OpUpdate,
 					BitSet: m.bitSetAll,
@@ -6309,8 +6304,8 @@ func (m *PersistManager) SyncUserData(uid int32) (err error) {
 		resetTimeNSec := func(clsMem, clsDb *{{.ArgsInfo.PersistPkgName}}.{{.DataName}}) {
 			defer func() {
 				if r := recover(); r != nil {
-					log.Infoln("recovered in ", r)
-					log.Infoln("stack: ", string(debug.Stack()))
+					log.Println("recovered in ", r)
+					log.Println("stack: ", string(debug.Stack()))
 				}
 			}()
 			typeF := reflect.TypeOf(*clsMem)
@@ -6340,7 +6335,7 @@ func (m *PersistManager) SyncUserData(uid int32) (err error) {
 		var has bool
 		has, err = session.Get(dbCls)
 		if err != nil || !has {
-			log.Infoln("SyncData query error.", err, "[sql error {{.DataName}}]", m.PersistSyncToString(&{{.DataName}}Sync{
+			log.Println("SyncData query error.", err, "[sql error {{.DataName}}]", m.PersistSyncToString(&{{.DataName}}Sync{
 				Data:   cls,
 				Op:     0,
 				BitSet: m.bitSetAll,
@@ -6453,8 +6448,8 @@ func (m *PersistManager) SyncUserData(uid int32) (err error) {
 		func() {
 			defer func() {
 				if r := recover(); r != nil {
-					log.Infoln("recovered in ", r)
-					log.Infoln("stack: ", string(debug.Stack()))
+					log.Println("recovered in ", r)
+					log.Println("stack: ", string(debug.Stack()))
 					err = errors.New("SyncUserData error")
 				}
 			}()
