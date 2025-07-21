@@ -4572,7 +4572,7 @@ var GPersistManager *PersistManager
 func init() {
 	engine := data.GetDB()
 	if engine == nil {
-		log.Println(persistCore.EPersistErrorEngineNil)
+		// log.Println(persistCore.EPersistErrorEngineNil)
 		persistCore.RegisterPersistLazy("Persist", GPersistManager)
 		return
 	}
@@ -4593,7 +4593,7 @@ func init() {
 {{if $.ArgsInfo.Save}}
 	engine := data.GetDB()
 	if engine == nil {
-		log.Println(persistCore.EPersistErrorEngineNil)
+		// log.Println(persistCore.EPersistErrorEngineNil)
 		persistCore.RegisterPersistLazy("{{.DataName}}", G{{.DataName}}Manager)
 		return
 	}
